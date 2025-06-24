@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col items-center justify-center h-full text-center">
-    <img src="/pokeball.png" alt="Pikachu" class="w-48 h-auto mb-8 animate-bounce" /> <h1 class="text-4xl font-bold text-gray-800 mb-4">Welcome to Pokédex!</h1>
+    <img src="/hero-img.jpg" alt="Pikachu" class="w-48 h-auto mb-8 animate-bounce" /> <h1 class="text-4xl font-bold text-gray-800 mb-4">Welcome to Pokédex!</h1>
     <p class="text-lg text-gray-600 mb-8 max-w-md">
       The digital encyclopedia created for Pokémon fans, from the Pokémon video games.
     </p>
