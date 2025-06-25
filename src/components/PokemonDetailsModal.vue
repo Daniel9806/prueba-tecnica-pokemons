@@ -19,8 +19,8 @@
           </svg>
         </button>
 
-        <LoadingSpinner v-if="pokemonStore.loading" class="my-8" />
-        <p v-else-if="pokemonStore.error" class="text-red-600 text-center">{{ pokemonStore.error }}</p>
+        <!-- <LoadingSpinner v-if="pokemonStore.loading" class="my-8" /> -->
+        <p v-if="pokemonStore.error" class="text-red-600 text-center">{{ pokemonStore.error }}</p>
         <div v-else-if="pokemonStore.selectedPokemonDetails" class="text-center">
           <img src="/pokemon-bg-img.png" alt="pokemon-bg-img" class="w-full h-52 object-cover
            rounded-t-sm relative" />
