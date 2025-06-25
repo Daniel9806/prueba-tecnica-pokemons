@@ -40,7 +40,7 @@ export const usePokemonStore = defineStore('pokemon', () => {
   
   //Methods
   const getFavoritesPokemonsFromStorage = () => {
-    favoritePokemonNames.value = JSON.parse(localStorage.getItem('favoritePokemonNames') as string);
+    favoritePokemonNames.value = JSON.parse(localStorage.getItem('favoritePokemonNames') as string) || [];
   }
 
   const getAllPokemons = async () => {
