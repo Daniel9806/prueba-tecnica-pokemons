@@ -19,7 +19,6 @@
           </svg>
         </button>
 
-        <!-- <LoadingSpinner v-if="pokemonStore.loading" class="my-8" /> -->
         <p v-if="pokemonStore.error" class="text-red-600 text-center">{{ pokemonStore.error }}</p>
         <div v-else-if="pokemonStore.selectedPokemonDetails" class="text-center">
           <img src="/pokemon-bg-img.png" alt="pokemon-bg-img" class="w-full h-52 object-cover
@@ -96,7 +95,7 @@
 <script setup>
 import { computed } from 'vue';
 import { usePokemonStore } from '@/stores/pokemon';
-import LoadingSpinner from '@/components/LoadingSpinner.vue';
+import LoadingSpinner from '@/components/shared/LoadingSpinner.vue';
 
 const pokemonStore = usePokemonStore();
 
@@ -113,6 +112,7 @@ const getPokemonImage = computed(() => {
     : null;
 });
 
+//Methods
 const closeModal = () => {
   pokemonStore.closeDetailsModal();
 };
@@ -145,7 +145,6 @@ const toggleFavorite = () => {
 </script>
 
 <style scoped>
-/* Modal transition styles */
 .modal-fade-enter-active,
 .modal-fade-leave-active {
   transition: opacity 0.3s ease;
@@ -156,7 +155,6 @@ const toggleFavorite = () => {
   opacity: 0;
 }
 
-/* For the actual modal content scale/opacity transition */
 .modal-fade-enter-active .transform,
 .modal-fade-leave-active .transform {
   transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.3s ease;

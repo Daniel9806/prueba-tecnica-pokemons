@@ -48,5 +48,4 @@ const isFavoritesActive = computed(() => {
 </script>
 
 <style scoped>
-/* No additional scoped styles needed for Tailwind */
 </style>
