@@ -1,12 +1,13 @@
 <template>
-  <div class="container mx-auto p-4 bg-white rounded-lg shadow-xl w-full max-w-lg">
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">Favorite Pokémon</h2>
+  <div class="container mx-auto p-4 rounded-lg w-full max-w-lg">
+
+    <PokemonSearchInput v-if="hasFavorites" @update:searchTerm="handleSearchInput" />
 
     <LoadingSpinner v-if="pokemonStore.loading" class="my-8" />
     <p v-else-if="pokemonStore.error" class="text-red-600 text-center">{{ pokemonStore.error }}</p>
-    <div v-else-if="pokemonStore.getFavoritePokemon.length > 0">
+    <div v-else-if="hasFavorites">
       <PokemonCard
-        v-for="pokemon in pokemonStore.getFavoritePokemon"
+        v-for="pokemon in pokemonStore.getFavoritePokemonsFiltered"
         :key="pokemon.name"
         :pokemon="pokemon"
         @toggleFavorite="pokemonStore.toggleFavorite"
@@ -16,21 +17,29 @@
   </div>
 </template>
 
-<script setup>
-import { onMounted } from 'vue';
-import { usePokemonStore } from '../stores/pokemon';
-import PokemonCard from '../components/PokemonCard.vue';
-import LoadingSpinner from '../components/LoadingSpinner.vue';
-import EmptyListView from '../views/EmptyListView.vue';
+<script setup lang="ts">
+import { onMounted, computed } from 'vue';
+import { usePokemonStore } from '@/stores/pokemon';
+import PokemonCard from '@/components/PokemonCard.vue';
+import LoadingSpinner from '@/components/LoadingSpinner.vue';
+import EmptyListView from '@/views/EmptyListView.vue';
+import PokemonSearchInput from '@/components/PokemonSearchInput.vue';
 
 const pokemonStore = usePokemonStore();
 
+const handleSearchInput = (searchTerm: string) => {
+  pokemonStore.setSearchTerm(searchTerm);
+};
+
+const hasFavorites = computed(() => {
+  return pokemonStore.getFavoritePokemons.length > 0;
+});
+
 onMounted(() => {
-  // Ensure we have all pokemon data loaded to filter favorites from it
-  if (pokemonStore.allPokemon.length === 0) {
-    pokemonStore.fetchAllPokemon(); // Fetch if not already loaded
+  if (pokemonStore.allPokemons.length === 0) {
+    pokemonStore.fetchAllPokemons();
   } else {
-    pokemonStore.syncFavoriteStatus(); // Make sure favorite status is updated
+    // pokemonStore.syncFavoriteStatus();
   }
 });
 </script>

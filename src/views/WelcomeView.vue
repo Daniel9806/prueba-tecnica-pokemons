@@ -1,14 +1,17 @@
 <template>
-  <div class="flex flex-col items-center justify-center h-full text-center">
-    <img src="/hero-img.jpg" alt="Pikachu" class="w-48 h-auto mb-8 animate-bounce" /> <h1 class="text-4xl font-bold text-gray-800 mb-4">Welcome to Pokédex!</h1>
+  <div class="flex flex-col items-center justify-center h-full text-center pt-10">
+    <img src="/hero-img.jpg" alt="Pikachu" class="w-64 h-auto mb-3" /> 
+    <h1 class="text-4xl font-bold text-gray-800 mb-4">Welcome to Pokédex!</h1>
     <p class="text-lg text-gray-600 mb-8 max-w-md">
       The digital encyclopedia created for Pokémon fans, from the Pokémon video games.
     </p>
     <button
       @click="startPokedex"
-      class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
+      class="bg-primary hover:bg-primary-hover text-white font-bold py-3 px-8 
+      rounded-full shadow-lg transition duration-300 ease-in-out transform hover:scale-105
+      cursor-pointer"
     >
-      Start
+      Get Started
     </button>
   </div>
 </template>

@@ -1,6 +1,6 @@
 <template>
-  <div style="box-shadow: 0px -10px 20px rgba(0, 0, 0, 0.1)" class="fixed flex space-x-4 justify-center items-center inset-x-0 bottom-0
-    bg-white p-3 z-50">
+  <div style="box-shadow: 0px -10px 20px rgba(0, 0, 0, 0.1)" class="fixed flex space-x-4 
+  justify-center items-center inset-x-0 bottom-0 bg-white p-3 z-50">
     <router-link
       to="/pokemon"
       class="flex items-center justify-center p-2 w-1/3 rounded-full transition-colors duration-200"
