@@ -96,7 +96,10 @@
 import { computed } from 'vue';
 import { usePokemonStore } from '@/stores/pokemon';
 import LoadingSpinner from '@/components/shared/LoadingSpinner.vue';
+import { useToast } from "vue-toastification";
 
+//Composables
+const toast = useToast();
 const pokemonStore = usePokemonStore();
 
 //Computed
@@ -130,10 +133,10 @@ const sharePokemonDetails = async () => {
 
   try {
     await navigator.clipboard.writeText(shareText);
-    alert('Pokémon details copied to clipboard!');
+    toast.success('Pokémon details copied to clipboard!');
   } catch (err) {
     console.error('Failed to copy text: ', err);
-    alert('Failed to copy details to clipboard.');
+    toast.error('Failed to copy details to clipboard.');
   }
 };
 
