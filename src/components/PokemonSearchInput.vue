@@ -17,7 +17,7 @@ const onSearchInput = () => {
       placeholder="Search"
       v-model="searchTerm"
       class="w-full pl-10 pr-4 py-3 bg-white rounded-sm focus:outline-none
-       focus:ring-2 focus:ring-red-500 focus:border-transparent"
+       focus:ring-2 focus:ring-primary focus:border-transparent"
       @input="onSearchInput"
     />
     <svg
