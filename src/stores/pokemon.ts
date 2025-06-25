@@ -113,9 +113,9 @@ export const usePokemonStore = defineStore('pokemon', () => {
     searchTerm.value = term;
   }
 
-  const openDetailsModal = (pokemonName: string) => {
+  const openDetailsModal = async (pokemonName: string) => {
+    await fetchPokemonDetails(pokemonName); 
     isDetailsModalOpen.value = true;
-    fetchPokemonDetails(pokemonName); 
   }
 
   const closeDetailsModal = () => {
