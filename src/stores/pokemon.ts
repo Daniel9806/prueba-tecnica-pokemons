@@ -1,37 +1,31 @@
-// src/stores/pokemon.js
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import axios from 'axios'
+import type { Pokemon } from '@/types/pokemon'
+import { fetchAll, fetchPokemonByName } from '@/services/pokemons'
 
 export const usePokemonStore = defineStore('pokemon', () => {
-  const allPokemons = ref<any[]>([])
-  const favoritePokemonNames = ref(JSON.parse(localStorage.getItem('favoritePokemonNames') as any || []))
+  //Data
+  const allPokemons = ref<Pokemon[]>([])
+  const favoritePokemonNames = ref<string[]>([])
   const selectedPokemonDetails = ref(null)
   const loading = ref(false)
   const error = ref<string | null>(null)
+  const searchTerm = ref<string>('')
+  const isDetailsModalOpen = ref(false);
+
+  //<Pagination data
   const currentPage = ref<number>(1)
   const limit = ref<number>(30)
   const offset = ref<number>(0)
   const totalPages = ref<number>(0)
-  const searchTerm = ref<string>('')
-
-  const isDetailsModalOpen = ref(false);
+  //>
 
   //Computed
   const getFavoritePokemons = computed(() => {
-    return allPokemons.value.filter(p => favoritePokemonNames.value.includes(p.name));
-  })
-
-  const getPokemonsFiltered = computed(() => {
-    //Lo correcto seria filtrar en la misma peticion de datos para buscar en todos los elementos 
-    //de la bd y no solo a nivel de front, pero no encontre endpoint para filtrar por un substring
-    if (!searchTerm.value) {
-      return allPokemons.value;
-    }
-    const lowerCaseSearchTerm = searchTerm.value.toLowerCase();
-    return allPokemons.value.filter((pokemon: any) =>
-      pokemon.name.toLowerCase().includes(lowerCaseSearchTerm)
-    );
+    return favoritePokemonNames.value.map((pokemonName: string) => ({
+      name: pokemonName,
+      isFavorite: true
+    } as Pokemon));
   })
 
   const getFavoritePokemonsFiltered = computed(() => {
@@ -39,20 +33,23 @@ export const usePokemonStore = defineStore('pokemon', () => {
       return getFavoritePokemons.value;
     }
     const lowerCaseSearchTerm = searchTerm.value.toLowerCase();
-    return getFavoritePokemons.value.filter((pokemon: any) =>
+    return getFavoritePokemons.value.filter((pokemon: Pokemon) =>
       pokemon.name.toLowerCase().includes(lowerCaseSearchTerm)
     );
   })
   
   //Methods
- const fetchAllPokemons = async () => {
+  const getFavoritesPokemonsFromStorage = () => {
+    favoritePokemonNames.value = JSON.parse(localStorage.getItem('favoritePokemonNames') as string);
+  }
+
+  const getAllPokemons = async () => {
     loading.value = true;
     error.value = null;
     try {
-      const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/?limit=${limit.value}&offset=${offset.value}`); 
-      allPokemons.value = response.data.results.map((pokemon: any) => ({
+      const response = await fetchAll({limit: limit.value, offset: offset.value}); 
+      allPokemons.value = response.data.results.map((pokemon: Pokemon) => ({
         name: pokemon.name,
-        url: pokemon.url,
         isFavorite: isFavorite(pokemon.name) 
       }));
       totalPages.value = Math.ceil(response.data.count / limit.value);
@@ -64,14 +61,31 @@ export const usePokemonStore = defineStore('pokemon', () => {
     }
   }
 
-  const fetchPokemonDetails = async (name: string) => {
+  const getPokemonDetails = async (name: string) => {
     loading.value = true;
     error.value = null;
     try {
-      const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${name}`);
+      const response = await fetchPokemonByName({name});
       selectedPokemonDetails.value = response.data;
     } catch (err) {
       error.value = `Failed to fetch details for ${name}.`;
+      console.error(err);
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  const searchPokemonByName = async (name: string) => {
+    loading.value = true;
+    error.value = null;
+    try {
+      const response = await fetchPokemonByName({name});
+      allPokemons.value = [{
+        name: response.data.name,
+        isFavorite: isFavorite(response.data.name) 
+      }]
+    } catch (err) {
+      error.value = `Don't found pokemon for ${name}.`;
       console.error(err);
     } finally {
       loading.value = false;
@@ -85,7 +99,7 @@ export const usePokemonStore = defineStore('pokemon', () => {
     } else {
       favoritePokemonNames.value.push(pokemonName);
     }
-    const pokemonInList = allPokemons.value.find(p => p.name === pokemonName);
+    const pokemonInList = allPokemons.value.find((pokemon: Pokemon) => pokemon.name === pokemonName);
     if (pokemonInList) {
       pokemonInList.isFavorite = !pokemonInList.isFavorite;
     }
@@ -96,25 +110,28 @@ export const usePokemonStore = defineStore('pokemon', () => {
     return favoritePokemonNames.value.includes(pokemonName);
   }
 
-  const syncFavoriteStatus = () => {
-    allPokemons.value = allPokemons.value.map((pokemon: any) => ({
-      ...pokemon,
-      isFavorite: isFavorite(pokemon.name)
-    }));
-  }
-
   const updateCurrentPage = (page: number) => {
     currentPage.value = page;
     offset.value = (page - 1) * limit.value;
-    fetchAllPokemons();
+    getAllPokemons();
   }
 
+  //Search favorite pokemons
   const setSearchTerm = (term: string) => {
     searchTerm.value = term;
   }
+  
+  const searchPokemon = (term: string) => {
+    if(term === '') {
+      getAllPokemons();
+    } else {
+      searchPokemonByName(term);
+    }
+  }
 
+  //Open and close details modal
   const openDetailsModal = async (pokemonName: string) => {
-    await fetchPokemonDetails(pokemonName); 
+    await getPokemonDetails(pokemonName); 
     isDetailsModalOpen.value = true;
   }
 
@@ -132,19 +149,19 @@ export const usePokemonStore = defineStore('pokemon', () => {
     loading,
     error,
     searchTerm,
-    getPokemonsFiltered,
     getFavoritePokemonsFiltered,
     isDetailsModalOpen,
     currentPage,
     totalPages,
-    fetchAllPokemons,
-    fetchPokemonDetails,
+    getFavoritesPokemonsFromStorage,
+    getAllPokemons,
+    getPokemonDetails,
     toggleFavorite,
-    syncFavoriteStatus,
     updateCurrentPage,  
     setSearchTerm,
     openDetailsModal,
     closeDetailsModal,
     isFavorite,
+    searchPokemon,
   }
 })

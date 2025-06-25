@@ -18,12 +18,18 @@
 
 <script setup>
 import { useRoute } from 'vue-router';
-import { computed } from 'vue';
-import BottomNavbar from '@/components/BottomNavbar.vue';
+import { computed, onMounted } from 'vue';
+import BottomNavbar from '@/components/shared/BottomNavbar.vue';
 import PokemonDetailsModal from '@/components/PokemonDetailsModal.vue';
+import { usePokemonStore } from '@/stores/pokemon';
 
+const pokemonStore = usePokemonStore();
 const route = useRoute();
 const isWelcomePage = computed(() => route.name === 'welcome');
+
+onMounted(() => {
+  pokemonStore.getFavoritesPokemonsFromStorage();
+});
 </script>
 
 <style>
