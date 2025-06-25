@@ -7,7 +7,7 @@ export const usePokemonStore = defineStore('pokemon', () => {
   //Data
   const allPokemons = ref<Pokemon[]>([])
   const favoritePokemonNames = ref<string[]>([])
-  const selectedPokemonDetails = ref(null)
+  const selectedPokemonDetails = ref<Pokemon | null>(null)
   const loading = ref(false)
   const error = ref<string | null>(null)
   const searchTerm = ref<string>('')
@@ -132,7 +132,9 @@ export const usePokemonStore = defineStore('pokemon', () => {
   //Open and close details modal
   const openDetailsModal = async (pokemonName: string) => {
     await getPokemonDetails(pokemonName); 
-    isDetailsModalOpen.value = true;
+    if(selectedPokemonDetails.value) {
+      isDetailsModalOpen.value = true;
+    }
   }
 
   const closeDetailsModal = () => {
@@ -148,6 +150,8 @@ export const usePokemonStore = defineStore('pokemon', () => {
     getFavoritePokemons,
     loading,
     error,
+    limit,
+    offset,
     searchTerm,
     getFavoritePokemonsFiltered,
     isDetailsModalOpen,
@@ -163,5 +167,6 @@ export const usePokemonStore = defineStore('pokemon', () => {
     closeDetailsModal,
     isFavorite,
     searchPokemon,
+    searchPokemonByName,
   }
 })
