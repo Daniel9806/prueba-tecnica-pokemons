@@ -1,3 +1,13 @@
+<script setup lang="ts">
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const startPokedex = () => {
+  router.push('/pokemon');
+};
+</script>
+
 <template>
   <div class="flex flex-col items-center justify-center h-full text-center pt-10">
     <img src="/hero-img.png" alt="Pikachu" class="w-64 h-auto mb-3" /> 
@@ -15,16 +25,6 @@
     </button>
   </div>
 </template>
-
-<script setup>
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-
-const startPokedex = () => {
-  router.push('/pokemon');
-};
-</script>
 
 <style scoped>
 img {
